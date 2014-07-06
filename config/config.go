@@ -3,8 +3,26 @@ package config
 import (
 	"encoding/json"
 	"github.com/tent/tent-client-go"
-	// "fmt"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"os/user"
+	"path"
 )
+
+var configPath string
+
+func init() {
+	configPath = os.Getenv("TENT_CONFIG")
+	if configPath == "" {
+		user, err := user.Current()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		configPath = path.Join(user.HomeDir, ".config", "tent.json")
+	}
+}
 
 type EntityConfig struct {
 	Entity string
@@ -27,14 +45,19 @@ func Write() error {
 	return nil
 }
 
-var data = ``
-
 func Read() (Config, error) {
 	var config Config
 
-	err := json.Unmarshal([]byte(data), &config)
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		return config, nil
+	}
 
+	file, err := ioutil.ReadFile(configPath)
 	if err != nil {
+		return config, err
+	}
+
+	if err = json.Unmarshal(file, &config); err != nil {
 		return config, err
 	}
 
