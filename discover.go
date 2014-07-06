@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/tent/tent-client-go"
-	"fmt"
-	"encoding/json"
 )
 
 var CmdDiscover = func() *cobra.Command {

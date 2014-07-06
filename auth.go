@@ -1,14 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"github.com/hendrikcech/tent/config"
+	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
 	"github.com/tent/tent-client-go"
-	"github.com/skratchdot/open-golang/open"
 	"strings"
-	"fmt"
 )
-/*auth [entity] --write=all --read=all --name=Tent CLI --url=testapp.com --scopes=permissions*/
-
 
 var CmdAuth = func() *cobra.Command {
 	name := "Tent CLI"
@@ -16,31 +15,44 @@ var CmdAuth = func() *cobra.Command {
 	write := "all"
 	read := "all"
 	scopes := "permissions"
-	
+
 	cmd := &cobra.Command{
-		Use:   "auth [entity]",
+		Use:   "auth [entity|name]",
 		Short: "Get new credentials for an entity",
 		Long:  "Get new credentials for an entity.",
 		Run: func(cmd *cobra.Command, args []string) {
-			if len(args) == 0 {
+			if len(args) != 1 {
 				cmd.Help()
 				return
 			}
 
-			meta, err := tent.Discover(args[0])
-			if err != nil {
+			c := config.Config{}
+			if err := c.Read(); err != nil {
 				fmt.Println(err)
 				return
 			}
 
-			client := &tent.Client{Servers: meta.Servers}
+			var servers []tent.MetaPostServer
+			_, p := c.ByName(args[0])
+			if p.Name != "" { // existing profile name passed
+				servers = p.Servers
+			} else {
+				meta, err := tent.Discover(args[0])
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				servers = meta.Servers
+			}
+
+			client := &tent.Client{Servers: servers}
 
 			app := &tent.App{
-				Name: name,
-				URL:  url,
+				Name:        name,
+				URL:         url,
 				RedirectURI: "https://app.example.com/oauth",
 			}
-			
+
 			if write != "" || read != "" {
 				app.Types = tent.AppTypes{}
 
@@ -58,7 +70,7 @@ var CmdAuth = func() *cobra.Command {
 
 			post := tent.NewAppPost(app)
 
-			err = client.CreatePost(post)
+			err := client.CreatePost(post)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -71,7 +83,7 @@ var CmdAuth = func() *cobra.Command {
 			}
 
 			// redirect url
-			oauthURL := meta.Servers[0].URLs.OAuthURL(post.ID, "randomState")
+			oauthURL := servers[0].URLs.OAuthURL(post.ID, "randomState")
 			err = open.Run(oauthURL)
 			if err != nil {
 				fmt.Println(oauthURL)
@@ -87,18 +99,27 @@ var CmdAuth = func() *cobra.Command {
 
 			// request access token
 			// client.Credentials, err = client.RequestAccessToken(code)
-			c, err := client.RequestAccessToken(code)
+			tokens, err := client.RequestAccessToken(code)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			
-			fmt.Printf(`{
+
+			if p.Name != "" {
+				p.ID = tokens.ID
+				p.Key = tokens.Key
+				p.App = tokens.App
+				defer c.Write()
+			}
+
+			tmpl := `{
   "id": "%v",
   "key": "%v",
   "algorithm": "sha256",
   "token_type": ""https://tent.io/oauth/hawk-token"
-}`, c.ID, c.Key)
+}
+`
+			fmt.Printf(tmpl, tokens.ID, tokens.Key)
 		},
 	}
 
@@ -109,4 +130,4 @@ var CmdAuth = func() *cobra.Command {
 	cmd.Flags().StringVarP(&scopes, "scopes", "s", "permissions", "Scopes")
 
 	return cmd
-}	
+}

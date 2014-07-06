@@ -2,8 +2,8 @@ package config
 
 import (
 	"encoding/json"
-	"github.com/tent/tent-client-go"
 	"fmt"
+	"github.com/tent/tent-client-go"
 	"io/ioutil"
 	"os"
 	"os/user"
@@ -25,15 +25,14 @@ func init() {
 }
 
 type ProfileConfig struct {
-	Name string
-	Entity string
+	Name    string
+	Entity  string
 	Servers []tent.MetaPostServer
 
-	ID string
+	ID  string
 	Key string
 	App string
 }
-
 
 type Config struct {
 	Profiles []ProfileConfig
@@ -75,11 +74,11 @@ func (c *Config) Read() error {
 	return nil
 }
 
-func (c *Config) ByName(name string) (int, ProfileConfig) {
+func (c *Config) ByName(name string) (int, *ProfileConfig) {
 	for i, p := range c.Profiles {
 		if p.Name == name {
-			return i, p
+			return i, &c.Profiles[i]
 		}
 	}
-	return -1, ProfileConfig{}
+	return -1, &ProfileConfig{}
 }

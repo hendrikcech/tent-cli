@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/tent/tent-client-go"
-	"github.com/hendrikcech/tent/config"
-	"github.com/stevedomin/termtable"
 	"fmt"
+	"github.com/hendrikcech/tent/config"
+	"github.com/spf13/cobra"
+	"github.com/stevedomin/termtable"
+	"github.com/tent/tent-client-go"
 )
 
 var CmdProfiles = func() *cobra.Command {
@@ -55,14 +55,14 @@ var CmdProfilesAdd = func() *cobra.Command {
 			}
 
 			c.Profiles = append(c.Profiles, config.ProfileConfig{
-				Name: name,
-				Entity: entity,
+				Name:    name,
+				Entity:  entity,
 				Servers: meta.Servers,
-				ID: id,
-				Key: key,
-				App: app,
+				ID:      id,
+				Key:     key,
+				App:     app,
 			})
-			
+
 			if err = c.Write(); err != nil {
 				fmt.Println(err)
 			}
@@ -81,11 +81,6 @@ var CmdProfilesList = func() *cobra.Command {
 		Short: "List your tent profiles",
 		Long:  "List your tent profiles.",
 		Run: func(cmd *cobra.Command, args []string) {
-			if len(args) != 1 {
-				cmd.Help()
-				return
-			}
-
 			c := config.Config{}
 			if err := c.Read(); err != nil {
 				fmt.Println(err)
@@ -126,7 +121,7 @@ var CmdProfilesRemove = func() *cobra.Command {
 				return
 			}
 			c.Profiles = append(c.Profiles[:i], c.Profiles[i+1:]...)
-			
+
 			if err := c.Write(); err != nil {
 				fmt.Println(err)
 			}
