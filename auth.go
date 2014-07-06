@@ -10,7 +10,7 @@ import (
 /*auth [entity] --write=all --read=all --name=Tent CLI --url=testapp.com --scopes=permissions*/
 
 
-var cmdAuth = func() *cobra.Command {
+var CmdAuth = func() *cobra.Command {
 	var name = "Tent CLI"
 	var url = "https://app.example.com"
 	var write = "all"

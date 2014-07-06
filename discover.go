@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 )
 
-var cmdDiscover = func() *cobra.Command {
+var CmdDiscover = func() *cobra.Command {
 	return &cobra.Command{
 		Use:   "discover [url to discover]",
 		Short: "Discover an url",

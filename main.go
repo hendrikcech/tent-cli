@@ -11,6 +11,9 @@ func main() {
 		panic(err)
 	}
 	var rootCmd = &cobra.Command{Use: "tent"}
-	rootCmd.AddCommand(cmdDiscover(), cmdAuth())
+	cmdProfiles := CmdProfiles()
+	cmdProfiles.AddCommand(CmdProfilesAdd(), CmdProfilesList(), CmdProfilesRemove())
+	rootCmd.AddCommand(CmdDiscover(), CmdAuth(), cmdProfiles)
+
 	rootCmd.Execute()
 }
