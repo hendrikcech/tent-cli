@@ -19,7 +19,7 @@ var CmdProfiles = func() *cobra.Command {
 	}
 }
 
-var CmdProfilesAdd = func() *cobra.Command {
+var CmdProfilesAdd = func(c *config.Config) *cobra.Command {
 	id := ""
 	key := ""
 	app := ""
@@ -36,12 +36,6 @@ var CmdProfilesAdd = func() *cobra.Command {
 
 			name := args[0]
 			entity := args[1]
-
-			c := config.Config{}
-			if err := c.Read(); err != nil {
-				fmt.Println(err)
-				return
-			}
 
 			if i, _ := c.ByName(name); i > -1 {
 				fmt.Printf("Profile \"%v\" already exists.\n", name)
@@ -75,18 +69,12 @@ var CmdProfilesAdd = func() *cobra.Command {
 
 	return cmd
 }
-var CmdProfilesList = func() *cobra.Command {
+var CmdProfilesList = func(c *config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
 		Short: "List your tent profiles",
 		Long:  "List your tent profiles.",
 		Run: func(cmd *cobra.Command, args []string) {
-			c := config.Config{}
-			if err := c.Read(); err != nil {
-				fmt.Println(err)
-				return
-			}
-
 			t := termtable.NewTable(nil, nil)
 			t.SetHeader([]string{"NAME", "ENTITY", "ID", "KEY", "APP"})
 
@@ -98,7 +86,7 @@ var CmdProfilesList = func() *cobra.Command {
 		},
 	}
 }
-var CmdProfilesRemove = func() *cobra.Command {
+var CmdProfilesRemove = func(c *config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "remove [name]",
 		Short: "Remove a profile",
@@ -109,12 +97,6 @@ var CmdProfilesRemove = func() *cobra.Command {
 				return
 			}
 			name := args[0]
-
-			c := config.Config{}
-			if err := c.Read(); err != nil {
-				fmt.Println(err)
-				return
-			}
 
 			i, _ := c.ByName(name)
 			if i == -1 {

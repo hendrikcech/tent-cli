@@ -8,6 +8,9 @@ import (
 	"os"
 	"os/user"
 	"path"
+	"github.com/tent/hawk-go"
+	"crypto/sha256"
+	"errors"
 )
 
 var configPath string
@@ -34,7 +37,20 @@ type ProfileConfig struct {
 	App string
 }
 
+func (p *ProfileConfig) Client() *tent.Client {
+	return &tent.Client{
+		Credentials: &hawk.Credentials{
+			ID: p.ID,
+			Key: p.Key,
+			App: p.App,
+			Hash: sha256.New,
+		},
+		Servers: p.Servers,
+	}
+}
+
 type Config struct {
+	Default string
 	Profiles []ProfileConfig
 }
 
@@ -81,4 +97,18 @@ func (c *Config) ByName(name string) (int, *ProfileConfig) {
 		}
 	}
 	return -1, &ProfileConfig{}
+}
+
+func (c *Config) DefaultProfile() (*ProfileConfig, error) {
+	if c.Default == "" {
+		return &ProfileConfig{}, errors.New("no default profile set")
+	}
+
+	i, p := c.ByName(c.Default)
+	if i == -1 {
+		err := errors.New(fmt.Sprintf("default profile \"%v\" doesn't exist", c.Default))
+		return &ProfileConfig{}, err
+	}
+
+	return p, nil
 }

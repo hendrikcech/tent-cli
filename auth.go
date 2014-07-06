@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var CmdAuth = func() *cobra.Command {
+var CmdAuth = func(c *config.Config) *cobra.Command {
 	name := "Tent CLI"
 	url := "https://app.example.com"
 	write := "all"
@@ -23,12 +23,6 @@ var CmdAuth = func() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) != 1 {
 				cmd.Help()
-				return
-			}
-
-			c := config.Config{}
-			if err := c.Read(); err != nil {
-				fmt.Println(err)
 				return
 			}
 
