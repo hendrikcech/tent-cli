@@ -11,11 +11,11 @@ import (
 
 
 var CmdAuth = func() *cobra.Command {
-	var name = "Tent CLI"
-	var url = "https://app.example.com"
-	var write = "all"
-	var read = "all"
-	var scopes = "permissions"
+	name := "Tent CLI"
+	url := "https://app.example.com"
+	write := "all"
+	read := "all"
+	scopes := "permissions"
 	
 	cmd := &cobra.Command{
 		Use:   "auth [entity]",
