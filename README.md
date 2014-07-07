@@ -1,17 +1,17 @@
 tent-cli
 ======
 
-Easily interact with the Tent protocol from your command line. Discover URLs, get credentials and query and create posts.
+Easily work with the Tent protocol from the command line. Discover URLs, get credentials and manage posts.
 
 ## Status
-[X] discovery
-[X] authentication
-[X] basic query functionality
-[X] query support
-[ ] get single posts
-[ ] create new posts
-[X] profile support
-[ ] post schema support
+- [X] discovery
+- [X] authentication
+- [X] query support
+- [ ] get single posts
+- [ ] create new posts
+- [ ] update existing posts
+- [X] profile support
+- [ ] post schema support
 
 ## Usage
 ```
@@ -25,6 +25,8 @@ Available Commands:
   query                      Query the posts feed
   help [command]             Help about any command
 ```
+
+Profiles are used to save entity and credential configurations. Create a new profile with `tent profiles add entity https://entity.cupcake.is`. Run `tent auth entity` to add credentials to the profile.
 
 ## Installation
 Visit [gobuild.io](http://gobuild.io/download/github.com/hendrikcech/tent-cli) and download a build for your system. If you're on OS X or Linux, unzip the file and copy `tent-cli` to `/usr/local/bin`.

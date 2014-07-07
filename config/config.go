@@ -39,13 +39,17 @@ type ProfileConfig struct {
 }
 
 func (p *ProfileConfig) Client() *tent.Client {
-	return &tent.Client{
-		Credentials: &hawk.Credentials{
+	var c *hawk.Credentials
+	if p.ID != "" {
+		c = &hawk.Credentials{
 			ID:   p.ID,
 			Key:  p.Key,
 			App:  p.App,
 			Hash: sha256.New,
-		},
+		}
+	}
+	return &tent.Client{
+		Credentials: c,
 		Servers: p.Servers,
 	}
 }
@@ -106,12 +110,12 @@ func (c *Config) ByName(name string) (int, *ProfileConfig) {
 
 func (c *Config) DefaultProfile() (*ProfileConfig, error) {
 	if c.Default == "" {
-		return &ProfileConfig{}, errors.New("no default profile set")
+		return &ProfileConfig{}, errors.New("No default profile set.")
 	}
 
 	i, p := c.ByName(c.Default)
 	if i == -1 {
-		err := errors.New(fmt.Sprintf("default profile \"%v\" doesn't exist", c.Default))
+		err := errors.New(fmt.Sprintf("Default profile \"%v\" doesn't exist.", c.Default))
 		return &ProfileConfig{}, err
 	}
 

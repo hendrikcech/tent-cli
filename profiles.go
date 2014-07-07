@@ -63,6 +63,10 @@ var CmdProfilesAdd = func(c *config.Config) *cobra.Command {
 				App:     app,
 			})
 
+			if c.Default == "" && len(c.Profiles) == 1 {
+				c.Default = name
+			}
+
 			if err = c.Write(); err != nil {
 				fmt.Println(err)
 			}
@@ -114,7 +118,7 @@ var CmdProfilesDefault = func(c *config.Config) *cobra.Command {
 			} else { // set default profile
 				i, _ := c.ByName(args[0])
 				if i == -1 {
-					fmt.Println("No profile named \"%v\" existent.", args[0])
+					fmt.Printf("No profile named \"%v\" existent.\n", args[0])
 					return
 				}
 				c.Default = args[0]

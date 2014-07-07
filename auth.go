@@ -79,9 +79,10 @@ var CmdAuth = func(c *config.Config) *cobra.Command {
 			// redirect url
 			oauthURL := servers[0].URLs.OAuthURL(post.ID, "randomState")
 			err = open.Run(oauthURL)
-			if err != nil {
-				fmt.Println(oauthURL)
-			}
+			fmt.Printf("Visit this url, accept, paste the code back in and press enter:\n%v\n", oauthURL)
+			// if err != nil {
+			// 	// fmt.Println(oauthURL)
+			// }
 
 			// wait for code input
 			var code string
@@ -99,13 +100,6 @@ var CmdAuth = func(c *config.Config) *cobra.Command {
 				return
 			}
 
-			if p.Name != "" {
-				p.ID = tokens.ID
-				p.Key = tokens.Key
-				p.App = tokens.App
-				defer c.Write()
-			}
-
 			tmpl := `{
   "id": "%v",
   "key": "%v",
@@ -114,6 +108,14 @@ var CmdAuth = func(c *config.Config) *cobra.Command {
 }
 `
 			fmt.Printf(tmpl, tokens.ID, tokens.Key)
+
+			if p.Name != "" {
+				p.ID = tokens.ID
+				p.Key = tokens.Key
+				p.App = tokens.App
+				c.Write()
+				fmt.Printf("Saved to profile \"%v\".\n", p.Name)
+			}
 		},
 	}
 
