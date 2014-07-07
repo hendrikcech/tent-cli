@@ -14,10 +14,11 @@ func main() {
 	}
 
 	rootCmd := &cobra.Command{Use: "tent"}
+	
 	cmdProfiles := CmdProfiles(&c)
 	cmdProfiles.AddCommand(CmdProfilesAdd(&c), CmdProfilesRemove(&c), CmdProfilesDefault(&c))
-	rootCmd.AddCommand(CmdDiscover(), CmdAuth(&c), cmdProfiles)
-	rootCmd.AddCommand(CmdQuery(&c))
+	
+	rootCmd.AddCommand(CmdDiscover(), CmdAuth(&c), cmdProfiles, CmdQuery(&c))
 
 	rootCmd.Execute()
 }

@@ -7,11 +7,13 @@ Easily interact with the Tent protocol from your command line. Discover URLs, ge
 [X] discovery
 [X] authentication
 [X] basic query functionality
-[ ] query functionality
+[X] query support
 [ ] get single posts
 [ ] create new posts
 [X] profile support
 [ ] post schema support
+
+Note: Mentions queries are currently not supported.
 
 ## Usage
 ```

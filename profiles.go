@@ -26,9 +26,9 @@ var CmdProfiles = func(c *config.Config) *cobra.Command {
 	}
 }
 var CmdProfilesAdd = func(c *config.Config) *cobra.Command {
-	id := ""
-	key := ""
-	app := ""
+	var id string
+	var key string
+	var app string
 
 	cmd := &cobra.Command{
 		Use:   "add profile_name entity",
