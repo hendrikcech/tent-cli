@@ -17,9 +17,9 @@ var CmdAuth = func(c *config.Config) *cobra.Command {
 	scopes := "permissions"
 
 	cmd := &cobra.Command{
-		Use:   "auth [entity|name]",
-		Short: "Get new credentials for an entity",
-		Long:  "Get new credentials for an entity.",
+		Use:   "auth [entity|profile_name]",
+		Short: "Get new credentials",
+		Long:  "Get new credentials for an entity or profile. If `profile_name` is specified, the credentials will be saved automatically.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) != 1 {
 				cmd.Help()

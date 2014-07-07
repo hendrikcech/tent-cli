@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/hendrikcech/tent/config"
 	"fmt"
+	"github.com/hendrikcech/tent/config"
+	"github.com/spf13/cobra"
 )
 
 func main() {
@@ -14,8 +14,8 @@ func main() {
 	}
 
 	rootCmd := &cobra.Command{Use: "tent"}
-	cmdProfiles := CmdProfiles()
-	cmdProfiles.AddCommand(CmdProfilesAdd(&c), CmdProfilesList(&c), CmdProfilesRemove(&c), CmdProfilesDefault(&c))
+	cmdProfiles := CmdProfiles(&c)
+	cmdProfiles.AddCommand(CmdProfilesAdd(&c), CmdProfilesRemove(&c), CmdProfilesDefault(&c))
 	rootCmd.AddCommand(CmdDiscover(), CmdAuth(&c), cmdProfiles)
 	rootCmd.AddCommand(CmdQuery(&c))
 

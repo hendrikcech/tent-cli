@@ -8,26 +8,32 @@ import (
 	"github.com/tent/tent-client-go"
 )
 
-var CmdProfiles = func() *cobra.Command {
+var CmdProfiles = func(c *config.Config) *cobra.Command {
 	return &cobra.Command{
-		Use:   "profiles [add|list|remove]",
-		Short: "Manage your tent profiles",
-		Long:  "Add, list or remove tent profiles.",
+		Use:   "profiles [add|remove]",
+		Short: "Manage your profiles",
+		Long:  "Profiles are identified by a unique name and save the entity uri plus credentials.\nAdd, remove or set a default profile with this command.",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			t := termtable.NewTable(nil, nil)
+			t.SetHeader([]string{"NAME", "ENTITY", "ID", "KEY", "APP"})
+
+			for _, p := range c.Profiles {
+				t.AddRow([]string{p.Name, p.Entity, p.ID, p.Key, p.App})
+			}
+
+			fmt.Println(t.Render())
 		},
 	}
 }
-
 var CmdProfilesAdd = func(c *config.Config) *cobra.Command {
 	id := ""
 	key := ""
 	app := ""
 
 	cmd := &cobra.Command{
-		Use:   "add [name] [entity]",
-		Short: "Add a profile",
-		Long:  "Add a profile.",
+		Use:   "add profile_name entity",
+		Short: "Create a new profile",
+		Long:  "Create a new profile named `profile_name` associated with `entity`.\nCredentials can either be specified with flags or by running `tent auth profile_name`.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 2 {
 				cmd.Help()
@@ -69,26 +75,9 @@ var CmdProfilesAdd = func(c *config.Config) *cobra.Command {
 
 	return cmd
 }
-var CmdProfilesList = func(c *config.Config) *cobra.Command {
-	return &cobra.Command{
-		Use:   "list",
-		Short: "List your tent profiles",
-		Long:  "List your tent profiles.",
-		Run: func(cmd *cobra.Command, args []string) {
-			t := termtable.NewTable(nil, nil)
-			t.SetHeader([]string{"NAME", "ENTITY", "ID", "KEY", "APP"})
-
-			for _, p := range c.Profiles {
-				t.AddRow([]string{p.Name, p.Entity, p.ID, p.Key, p.App})
-			}
-
-			fmt.Println(t.Render())
-		},
-	}
-}
 var CmdProfilesRemove = func(c *config.Config) *cobra.Command {
 	return &cobra.Command{
-		Use:   "remove [name]",
+		Use:   "remove profile_name",
 		Short: "Remove a profile",
 		Long:  "Remove a profile by its name.",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -116,7 +105,7 @@ var CmdProfilesDefault = func(c *config.Config) *cobra.Command {
 		Short: "Echo or set the default profile",
 		Long:  "Echo or set the default profile.",
 		Run: func(cmd *cobra.Command, args []string) {
-			if(len(args) == 0) { // echo default profile
+			if len(args) == 0 { // echo default profile
 				if c.Default == "" {
 					fmt.Println("No default profile set.")
 					return

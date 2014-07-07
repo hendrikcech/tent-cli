@@ -1,16 +1,16 @@
 package config
 
 import (
+	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/tent/hawk-go"
 	"github.com/tent/tent-client-go"
 	"io/ioutil"
 	"os"
 	"os/user"
 	"path"
-	"github.com/tent/hawk-go"
-	"crypto/sha256"
-	"errors"
 )
 
 var configPath string
@@ -40,9 +40,9 @@ type ProfileConfig struct {
 func (p *ProfileConfig) Client() *tent.Client {
 	return &tent.Client{
 		Credentials: &hawk.Credentials{
-			ID: p.ID,
-			Key: p.Key,
-			App: p.App,
+			ID:   p.ID,
+			Key:  p.Key,
+			App:  p.App,
 			Hash: sha256.New,
 		},
 		Servers: p.Servers,
@@ -50,7 +50,7 @@ func (p *ProfileConfig) Client() *tent.Client {
 }
 
 type Config struct {
-	Default string
+	Default  string
 	Profiles []ProfileConfig
 }
 

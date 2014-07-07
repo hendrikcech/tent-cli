@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/hendrikcech/tent/config"
 	"github.com/spf13/cobra"
-	"github.com/tent/tent-client-go"
-	"fmt"
 	"github.com/stevedomin/termtable"
+	"github.com/tent/tent-client-go"
 )
 
 var CmdQuery = func(c *config.Config) *cobra.Command {
@@ -27,9 +27,9 @@ var CmdQuery = func(c *config.Config) *cobra.Command {
 				return
 			}
 			// fmt.Printf("%+v\n", res.Posts[0])
-			
+
 			layout := "2006-01-02 15:04"
-			
+
 			t := termtable.NewTable(nil, nil)
 			t.SetHeader([]string{"ID", "ENTITY", "TYPE", "PUBLISHED_AT"})
 

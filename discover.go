@@ -9,9 +9,9 @@ import (
 
 var CmdDiscover = func() *cobra.Command {
 	return &cobra.Command{
-		Use:   "discover [url to discover]",
+		Use:   "discover url",
 		Short: "Discover an url",
-		Long:  "Get the associated entity for an url.",
+		Long:  "Discover an url and output any associated meta posts.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
 				cmd.Help()
