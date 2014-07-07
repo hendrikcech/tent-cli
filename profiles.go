@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/hendrikcech/tent/config"
+	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 	"github.com/stevedomin/termtable"
 	"github.com/tent/tent-client-go"

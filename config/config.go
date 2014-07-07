@@ -9,32 +9,33 @@ import (
 	"github.com/tent/tent-client-go"
 	"io/ioutil"
 	"os"
-	"os/user"
 	"path"
+	"runtime"
 )
 
-var configPath string
-
-func init() {
-	configPath = os.Getenv("TENT_CONFIG")
-	if configPath == "" {
-		user, err := user.Current()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		configPath = path.Join(user.HomeDir, ".config", "tent.json")
+func configPath() string {
+	p := os.Getenv("TENT_CONFIG")
+	if p == "" {
+		p = path.Join(homedir(), ".config", "tent.json")
 	}
+	return p
+}
+
+func homedir() string {
+	if runtime.GOOS == "windows" {
+		return os.Getenv("%APPDATA%")
+	}
+	return os.Getenv("HOME")
 }
 
 type ProfileConfig struct {
-	Name    string
-	Entity  string
-	Servers []tent.MetaPostServer
+	Name    string                `json:"name"`
+	Entity  string                `json:"entity"`
+	Servers []tent.MetaPostServer `json:"servers"`
 
-	ID  string
-	Key string
-	App string
+	ID  string `json:"id"`
+	Key string `json:"key"`
+	App string `json:"app"`
 }
 
 func (p *ProfileConfig) Client() *tent.Client {
@@ -50,8 +51,8 @@ func (p *ProfileConfig) Client() *tent.Client {
 }
 
 type Config struct {
-	Default  string
-	Profiles []ProfileConfig
+	Default  string          `json:"default"`
+	Profiles []ProfileConfig `json:"profiles"`
 }
 
 func (c *Config) Write() error {
@@ -60,12 +61,14 @@ func (c *Config) Write() error {
 		return err
 	}
 
-	err = os.MkdirAll(path.Dir(configPath), 0700)
+	p := configPath()
+
+	err = os.MkdirAll(path.Dir(p), 0700)
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(configPath, enc, 0644)
+	err = ioutil.WriteFile(p, enc, 0644)
 	if err != nil {
 		return err
 	}
@@ -74,11 +77,13 @@ func (c *Config) Write() error {
 }
 
 func (c *Config) Read() error {
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	p := configPath()
+
+	if _, err := os.Stat(p); os.IsNotExist(err) {
 		return nil
 	}
 
-	file, err := ioutil.ReadFile(configPath)
+	file, err := ioutil.ReadFile(p)
 	if err != nil {
 		return err
 	}

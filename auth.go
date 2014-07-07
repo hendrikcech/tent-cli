@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/hendrikcech/tent/config"
+	"github.com/hendrikcech/tent-cli/config"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
 	"github.com/tent/tent-client-go"

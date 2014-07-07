@@ -13,8 +13,6 @@ Easily interact with the Tent protocol from your command line. Discover URLs, ge
 [X] profile support
 [ ] post schema support
 
-Note: Mentions queries are currently not supported.
-
 ## Usage
 ```
 Usage:

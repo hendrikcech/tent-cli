@@ -2,22 +2,22 @@ package main
 
 import (
 	"fmt"
-	"github.com/hendrikcech/tent/config"
+	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 	"github.com/stevedomin/termtable"
 	"github.com/tent/tent-client-go"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
 )
 
 var CmdQuery = func(c *config.Config) *cobra.Command {
 	var limit int
-	var since string // 1234567890,version
-	var before string // 1234567890,version
-	var until string // 1234567890,version
+	var since string    // 1234567890,version
+	var before string   // 1234567890,version
+	var until string    // 1234567890,version
 	var entities string // entityone,entitytwo
-	var types string // typeone,typetwo
+	var types string    // typeone,typetwo
 	var maxRefs int
 	// var mentions string // mentionone,mentiontwo
 
@@ -32,16 +32,16 @@ var CmdQuery = func(c *config.Config) *cobra.Command {
 				return
 			}
 			client := p.Client()
-			
+
 			q := tent.NewPostsFeedQuery()
-			
+
 			q.Limit(limit)
 			q.MaxRefs(maxRefs)
 
-			timeSetter := map[string]func(time.Time, string) *tent.PostsFeedQuery {
-				since: q.Since,
+			timeSetter := map[string]func(time.Time, string) *tent.PostsFeedQuery{
+				since:  q.Since,
 				before: q.Before,
-				until: q.Until,
+				until:  q.Until,
 			}
 			for arg, setter := range timeSetter {
 				err = splitAndSetTimeValue(arg, setter)
@@ -64,10 +64,8 @@ var CmdQuery = func(c *config.Config) *cobra.Command {
 				return
 			}
 
-
 			t := termtable.NewTable(nil, nil)
 			t.SetHeader([]string{"ID", "ENTITY", "TYPE", "PUBLISHED_AT"})
-
 
 			for _, p := range res.Posts {
 				// layout := "2006-01-02 15:04" // p.PublishedAt.Format(layout)
