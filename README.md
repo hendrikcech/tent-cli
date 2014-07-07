@@ -29,7 +29,7 @@ Available Commands:
 Profiles are used to save entity and credential configurations. Create a new profile with `tent profiles add entity https://entity.cupcake.is`. Run `tent auth entity` to add credentials to the profile.
 
 ## Installation
-Visit [gobuild.io](http://gobuild.io/download/github.com/hendrikcech/tent-cli) and download a build for your system. If you're on OS X or Linux, unzip the file and copy `tent-cli` to `/usr/local/bin`.
+Visit the [releases page](https://github.com/hendrikcech/tent-cli/releases/latest) and download a build for your system. If you're on OS X or Linux, unzip the file and copy `tent-cli` to `/usr/local/bin`.
 
 Or, compile it yourself:
 ```
