@@ -15,7 +15,7 @@ func main() {
 
 	rootCmd := &cobra.Command{Use: "tent"}
 	cmdProfiles := CmdProfiles()
-	cmdProfiles.AddCommand(CmdProfilesAdd(&c), CmdProfilesList(&c), CmdProfilesRemove(&c))
+	cmdProfiles.AddCommand(CmdProfilesAdd(&c), CmdProfilesList(&c), CmdProfilesRemove(&c), CmdProfilesDefault(&c))
 	rootCmd.AddCommand(CmdDiscover(), CmdAuth(&c), cmdProfiles)
 	rootCmd.AddCommand(CmdQuery(&c))
 

@@ -110,3 +110,27 @@ var CmdProfilesRemove = func(c *config.Config) *cobra.Command {
 		},
 	}
 }
+var CmdProfilesDefault = func(c *config.Config) *cobra.Command {
+	return &cobra.Command{
+		Use:   "default [name]",
+		Short: "Echo or set the default profile",
+		Long:  "Echo or set the default profile.",
+		Run: func(cmd *cobra.Command, args []string) {
+			if(len(args) == 0) { // echo default profile
+				if c.Default == "" {
+					fmt.Println("No default profile set.")
+					return
+				}
+				fmt.Printf("Default profile is \"%v\"\n", c.Default)
+			} else { // set default profile
+				i, _ := c.ByName(args[0])
+				if i == -1 {
+					fmt.Println("No profile named \"%v\" existent.", args[0])
+					return
+				}
+				c.Default = args[0]
+				c.Write()
+			}
+		},
+	}
+}
