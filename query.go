@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var CmdQuery = func(c *config.Config) *cobra.Command {
+func CmdQuery(c *config.Config) *cobra.Command {
 	var limit int
 	var since string    // 1234567890,version
 	var before string   // 1234567890,version

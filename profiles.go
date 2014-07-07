@@ -8,7 +8,7 @@ import (
 	"github.com/tent/tent-client-go"
 )
 
-var CmdProfiles = func(c *config.Config) *cobra.Command {
+func CmdProfiles(c *config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "profiles [add|remove]",
 		Short: "Manage your profiles",
@@ -25,7 +25,7 @@ var CmdProfiles = func(c *config.Config) *cobra.Command {
 		},
 	}
 }
-var CmdProfilesAdd = func(c *config.Config) *cobra.Command {
+func CmdProfilesAdd(c *config.Config) *cobra.Command {
 	var id string
 	var key string
 	var app string
@@ -79,7 +79,7 @@ var CmdProfilesAdd = func(c *config.Config) *cobra.Command {
 
 	return cmd
 }
-var CmdProfilesRemove = func(c *config.Config) *cobra.Command {
+func CmdProfilesRemove(c *config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "remove profile_name",
 		Short: "Remove a profile",
@@ -103,7 +103,7 @@ var CmdProfilesRemove = func(c *config.Config) *cobra.Command {
 		},
 	}
 }
-var CmdProfilesDefault = func(c *config.Config) *cobra.Command {
+func CmdProfilesDefault(c *config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "default [name]",
 		Short: "Echo or set the default profile",

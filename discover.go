@@ -7,7 +7,7 @@ import (
 	"github.com/tent/tent-client-go"
 )
 
-var CmdDiscover = func() *cobra.Command {
+func CmdDiscover() *cobra.Command {
 	return &cobra.Command{
 		Use:   "discover url",
 		Short: "Discover an url",

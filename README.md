@@ -7,7 +7,7 @@ Easily work with the Tent protocol from the command line. Discover URLs, get cre
 - [X] discovery
 - [X] authentication
 - [X] query support
-- [ ] get single posts
+- [X] get single posts
 - [ ] create new posts
 - [ ] update existing posts
 - [X] profile support

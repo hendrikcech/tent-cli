@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var CmdAuth = func(c *config.Config) *cobra.Command {
+func CmdAuth(c *config.Config) *cobra.Command {
 	var name string
 	url := "https://app.example.com"
 	var write string
