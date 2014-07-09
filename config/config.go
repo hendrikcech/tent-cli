@@ -51,6 +51,7 @@ func (p *ProfileConfig) Client() *tent.Client {
 	return &tent.Client{
 		Credentials: c,
 		Servers:     p.Servers,
+		Entity:      p.Entity,
 	}
 }
 
