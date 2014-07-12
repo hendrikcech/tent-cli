@@ -15,7 +15,7 @@ func CmdDelete(c *config.Config) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			id := ""
 			version := ""
-			
+
 			switch len(args) {
 			case 1:
 				id = args[0]
@@ -41,6 +41,6 @@ func CmdDelete(c *config.Config) *cobra.Command {
 			}
 		},
 	}
-	
+
 	return cmd
 }

@@ -18,7 +18,7 @@ func main() {
 	cmdProfiles := CmdProfiles(&c)
 	cmdProfiles.AddCommand(CmdProfilesAdd(&c), CmdProfilesRemove(&c), CmdProfilesDefault(&c))
 
-	rootCmd.AddCommand(CmdDiscover(), CmdAuth(&c), cmdProfiles, CmdQuery(&c), CmdGet(&c), CmdDelete(&c))
+	rootCmd.AddCommand(CmdDiscover(), CmdAuth(&c), cmdProfiles, CmdQuery(&c), CmdGet(&c), CmdCreate(&c), CmdDelete(&c))
 
 	rootCmd.Execute()
 }
