@@ -9,7 +9,7 @@ import (
 
 func CmdDiscover() *cobra.Command {
 	return &cobra.Command{
-		Use:   "discover url",
+		Use:   "discover <url>",
 		Short: "Discover an url",
 		Long:  "Discover an url and output any associated meta posts.",
 		Run: func(cmd *cobra.Command, args []string) {

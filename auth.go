@@ -17,7 +17,7 @@ func CmdAuth(c *config.Config) *cobra.Command {
 	var scopes string
 
 	cmd := &cobra.Command{
-		Use:   "auth [entity|profile_name]",
+		Use:   "auth [<entity>|<profile_name>]",
 		Short: "Get new credentials",
 		Long:  "Get new credentials for an entity or profile. If `profile_name` is specified, the credentials will be saved automatically.",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -27,7 +27,7 @@ func CmdAuth(c *config.Config) *cobra.Command {
 			}
 
 			var servers []tent.MetaPostServer
-			_, p := c.ByName(args[0])
+			_, p := c.ProfileByName(args[0])
 			if p.Name != "" { // existing profile name passed
 				servers = p.Servers
 			} else {

@@ -10,7 +10,7 @@ import (
 
 func CmdGet(c *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get [entity] id [version]",
+		Use:   "get [<entity>] <id> [<version>]",
 		Short: "Get a single post",
 		Long:  "Get a single post. Only the post id is required. Entity defaults to the current profiles entity.",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -28,7 +28,10 @@ func CmdGet(c *config.Config) *cobra.Command {
 			case 1:
 				id = args[0]
 			case 2:
-				if _, err := url.ParseRequestURI(args[0]); err != nil {
+				if i, profile := c.ProfileByName(args[0]); i > -1 { 
+					entity = profile.Entity
+					id = args[1]
+				} else if _, err := url.ParseRequestURI(args[0]); err != nil {
 					// not an url -> id
 					id = args[0]
 					version = args[1]

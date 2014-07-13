@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"errors"
+	"net/url"
 )
 
 func CmdQuery(c *config.Config) *cobra.Command {
@@ -52,10 +54,40 @@ func CmdQuery(c *config.Config) *cobra.Command {
 			}
 
 			if entities != "" {
-				q.Set("entities", entities)
+				entitiesStr, err := splitAndMaybeReplace(entities, func(name string) (string, error) {
+					if i, p := c.ProfileByName(name); i > -1 {
+						return p.Entity, nil
+					}
+					if _, err := url.ParseRequestURI(name); err != nil {
+						return "", errors.New(fmt.Sprintf(`Profile "%v" not found.`, name))
+					}
+					return name, nil
+				})
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				q.Set("entities", entitiesStr)
 			}
 			if types != "" {
-				q.Set("types", types)
+				typesStr, err := splitAndMaybeReplace(types, func(name string) (string, error) {
+					n := strings.Split(name, "#")
+					if i, p := c.SchemaByName(n[0]); i > -1 {
+						if len(n) == 2 && !strings.Contains(p.PostType, "#") {
+							return p.PostType + "#" + n[1], nil
+						}
+						return p.PostType, nil
+					}
+					if _, err := url.ParseRequestURI(name); err != nil {
+						return "", errors.New(fmt.Sprintf(`Schema "%v" not found.`, name))
+					}
+					return name, nil
+				})
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				q.Set("types", typesStr)
 			}
 
 			res, err := client.GetFeed(q, nil)
@@ -105,4 +137,16 @@ func splitAndSetTimeValue(arg string, setter func(time.Time, string) *tent.Posts
 		}
 	}
 	return nil
+}
+
+func splitAndMaybeReplace(s string, get func(string) (string, error)) (string, error) {
+	res := []string{}
+	for _, part := range strings.Split(s, ",") {
+		p, err := get(part)
+		if err != nil {
+			return "", err
+		}
+		res = append(res, p)
+	}
+	return strings.Join(res, ","), nil
 }

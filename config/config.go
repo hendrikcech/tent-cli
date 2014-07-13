@@ -28,6 +28,11 @@ func homedir() string {
 	return os.Getenv("HOME")
 }
 
+type SchemaConfig struct {
+	Name string `json:"name"`
+	PostType string `json:"postType"`
+}
+
 type ProfileConfig struct {
 	Name    string                `json:"name"`
 	Entity  string                `json:"entity"`
@@ -58,6 +63,7 @@ func (p *ProfileConfig) Client() *tent.Client {
 type Config struct {
 	Default  string          `json:"default"`
 	Profiles []ProfileConfig `json:"profiles"`
+	Schemas []SchemaConfig `json:"schemas"`
 }
 
 func (c *Config) Write() error {
@@ -85,6 +91,7 @@ func (c *Config) Read() error {
 	p := configPath()
 
 	if _, err := os.Stat(p); os.IsNotExist(err) {
+		c.setDefault()
 		return nil
 	}
 
@@ -100,7 +107,15 @@ func (c *Config) Read() error {
 	return nil
 }
 
-func (c *Config) ByName(name string) (int, *ProfileConfig) {
+func (c *Config) setDefault() {
+	c.Schemas = []SchemaConfig{
+		SchemaConfig{"meta", "https://tent.io/types/meta/v0"},
+		SchemaConfig{"app", "https://tent.io/types/app/v0"},
+		SchemaConfig{"status", "https://tent.io/types/status/v0"},
+	}
+}
+
+func (c *Config) ProfileByName(name string) (int, *ProfileConfig) {
 	for i, p := range c.Profiles {
 		if p.Name == name {
 			return i, &c.Profiles[i]
@@ -114,11 +129,20 @@ func (c *Config) DefaultProfile() (*ProfileConfig, error) {
 		return &ProfileConfig{}, errors.New("No default profile set.")
 	}
 
-	i, p := c.ByName(c.Default)
+	i, p := c.ProfileByName(c.Default)
 	if i == -1 {
 		err := errors.New(fmt.Sprintf("Default profile \"%v\" doesn't exist.", c.Default))
 		return &ProfileConfig{}, err
 	}
 
 	return p, nil
+}
+
+func (c *Config) SchemaByName(name string) (int, *SchemaConfig) {
+	for i, s := range c.Schemas {
+		if s.Name == name {
+			return i, &c.Schemas[i]
+		}
+	}
+	return -1, &SchemaConfig{}
 }

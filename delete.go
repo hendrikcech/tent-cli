@@ -9,7 +9,7 @@ import (
 
 func CmdDelete(c *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete id [version]",
+		Use:   "delete <post_id> [<version_id>]",
 		Short: "Delete a post",
 		Long:  "Delete a post.",
 		Run: func(cmd *cobra.Command, args []string) {

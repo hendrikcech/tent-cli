@@ -10,7 +10,7 @@ import (
 
 func CmdProfiles(c *config.Config) *cobra.Command {
 	return &cobra.Command{
-		Use:   "profiles [add|remove]",
+		Use:   "profiles",
 		Short: "Manage your profiles",
 		Long:  "Profiles are identified by a unique name and save the entity uri plus credentials.\nAdd, remove or set a default profile with this command.",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -31,7 +31,7 @@ func CmdProfilesAdd(c *config.Config) *cobra.Command {
 	var app string
 
 	cmd := &cobra.Command{
-		Use:   "add profile_name entity",
+		Use:   "add <profile_name> <entity>",
 		Short: "Create a new profile",
 		Long:  "Create a new profile named `profile_name` associated with `entity`.\nCredentials can either be specified with flags or by running `tent auth profile_name`.",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -43,7 +43,7 @@ func CmdProfilesAdd(c *config.Config) *cobra.Command {
 			name := args[0]
 			entity := args[1]
 
-			if i, _ := c.ByName(name); i > -1 {
+			if i, _ := c.ProfileByName(name); i > -1 {
 				fmt.Printf("Profile \"%v\" already exists.\n", name)
 				return
 			}
@@ -81,7 +81,7 @@ func CmdProfilesAdd(c *config.Config) *cobra.Command {
 }
 func CmdProfilesRemove(c *config.Config) *cobra.Command {
 	return &cobra.Command{
-		Use:   "remove profile_name",
+		Use:   "remove <profile_name>",
 		Short: "Remove a profile",
 		Long:  "Remove a profile by its name.",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -91,7 +91,7 @@ func CmdProfilesRemove(c *config.Config) *cobra.Command {
 			}
 			name := args[0]
 
-			i, _ := c.ByName(name)
+			i, _ := c.ProfileByName(name)
 			if i == -1 {
 				return
 			}
@@ -105,7 +105,7 @@ func CmdProfilesRemove(c *config.Config) *cobra.Command {
 }
 func CmdProfilesDefault(c *config.Config) *cobra.Command {
 	return &cobra.Command{
-		Use:   "default [name]",
+		Use:   "default [<profile_name>]",
 		Short: "Echo or set the default profile",
 		Long:  "Echo or set the default profile.",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -116,7 +116,7 @@ func CmdProfilesDefault(c *config.Config) *cobra.Command {
 				}
 				fmt.Printf("Default profile is \"%v\"\n", c.Default)
 			} else { // set default profile
-				i, _ := c.ByName(args[0])
+				i, _ := c.ProfileByName(args[0])
 				if i == -1 {
 					fmt.Printf("No profile named \"%v\" existent.\n", args[0])
 					return
