@@ -43,8 +43,6 @@ func main() {
 	rootCmd.Execute()
 }
 
-const MISSING_FRAGMENT_ERROR = `Post type must have a fragment. Place a "#" at the end.`
-
 func isURL(s string) bool {
 	if _, err := url.ParseRequestURI(s); err != nil {
 		return false

@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 	"errors"
-	"net/url"
 )
 
 func CmdQuery(c *config.Config) *cobra.Command {
@@ -29,7 +28,12 @@ func CmdQuery(c *config.Config) *cobra.Command {
 		Long:  `
 Query the posts feed of the default profile.
 Find more information about the available parameters here: https://tent.io/docs/api#postsfeed
-Join multiple values with commata, i.e. when using --entities or --types.,
+Join multiple values with commata, i.e. when using --entities or --types.
+
+A note about --types and fragments:
+- "--types=https://tent.io/types/status/v0" matches all fragments
+- "--types=https://tent.io/types/status/v0#" just matches "https://tent.io/types/status/v0#"
+- "--types=https://tent.io/types/status/v0#reply" just matches "https://tent.io/types/status/v0#reply"
 `,
 		Run: func(cmd *cobra.Command, args []string) {
 			p, err := c.DefaultProfile()
@@ -62,7 +66,7 @@ Join multiple values with commata, i.e. when using --entities or --types.,
 					if i, p := c.ProfileByName(name); i > -1 {
 						return p.Entity, nil
 					}
-					if _, err := url.ParseRequestURI(name); err != nil {
+					if !isURL(name) {
 						return "", errors.New(fmt.Sprintf(`Profile "%v" not found.`, name))
 					}
 					return name, nil
@@ -75,14 +79,10 @@ Join multiple values with commata, i.e. when using --entities or --types.,
 			}
 			if types != "" {
 				typesStr, err := splitAndMaybeReplace(types, func(name string) (string, error) {
-					n := strings.Split(name, "#")
-					if i, p := c.SchemaByName(n[0]); i > -1 {
-						if len(n) == 2 && !strings.Contains(p.PostType, "#") {
-							return p.PostType + "#" + n[1], nil
-						}
-						return p.PostType, nil
+					if i, s := c.SchemaByName(name); i > -1 {
+						return s.MergeFragment(name), nil
 					}
-					if _, err := url.ParseRequestURI(name); err != nil {
+					if !isURL(name) {
 						return "", errors.New(fmt.Sprintf(`Schema "%v" not found.`, name))
 					}
 					return name, nil

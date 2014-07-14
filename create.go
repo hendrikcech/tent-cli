@@ -24,7 +24,7 @@ Use the ":=" operator to create a nested structure:
 create https://example.com/types/place/v0# name=":)" location='{"lat": "-41.290975", "lon": "174.792864"}'
 
 You can also directly pass the full post:
-create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "https://some.license"}], "content": { "name": "Joy" }}' 
+create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "https://some.license"}], "content": { "name": "Joy" }}'
 `,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
@@ -37,12 +37,12 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 
 			i, s := c.SchemaByName(args[0])
 			if i > -1 {
-				postType = s.PostType
+				postType = s.MergeFragment(args[0])
 			}
 
 			if i > -1 || isURL(args[0]) {
 				if !strings.Contains(postType, "#") {
-					fmt.Println(MISSING_FRAGMENT_ERROR)
+					fmt.Println(`Post types are required to have a fragment. Place a "#" at the end.`)
 					return
 				}
 

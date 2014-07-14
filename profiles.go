@@ -39,7 +39,7 @@ func CmdProfilesAdd(c *config.Config) *cobra.Command {
 		Short: "Create a new profile.",
 		Long:  `
 Create a new profile named <profile_name> that's associated with <entity>.
-Credentials can either be specified with flags or by running ` + "`auth <profile_name>`.",
+Credentials can either be specified with flags or by running "auth <profile_name>".`,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 2 {
 				cmd.Help()

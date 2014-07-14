@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
-	"net/url"
 )
 
 func CmdGet(c *config.Config) *cobra.Command {
@@ -33,7 +32,7 @@ Get a single post by its' post id.
 				if i, profile := c.ProfileByName(args[0]); i > -1 { 
 					entity = profile.Entity
 					id = args[1]
-				} else if _, err := url.ParseRequestURI(args[0]); err != nil {
+				} else if !isURL(args[0]) {
 					// not an url -> id
 					id = args[0]
 					version = args[1]

@@ -11,6 +11,7 @@ import (
 	"os"
 	"path"
 	"runtime"
+	"strings"
 )
 
 func configPath() string {
@@ -31,6 +32,17 @@ func homedir() string {
 type SchemaConfig struct {
 	Name string `json:"name"`
 	PostType string `json:"postType"`
+}
+
+// http://play.golang.org/p/__XjCi5hI7
+func (s *SchemaConfig) MergeFragment(postType string) string {
+	schema := strings.Split(s.PostType, "#")
+	post := strings.Split(postType, "#")
+
+	if len(post) > 1 {
+		return schema[0] + "#" + post[1]
+	}
+	return s.PostType
 }
 
 type ProfileConfig struct {
@@ -139,8 +151,9 @@ func (c *Config) DefaultProfile() (*ProfileConfig, error) {
 }
 
 func (c *Config) SchemaByName(name string) (int, *SchemaConfig) {
+	n := strings.Split(name, "#")
 	for i, s := range c.Schemas {
-		if s.Name == name {
+		if s.Name == n[0] {
 			return i, &c.Schemas[i]
 		}
 	}

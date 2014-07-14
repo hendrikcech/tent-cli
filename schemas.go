@@ -52,8 +52,8 @@ func CmdSchemasAdd(c *config.Config) *cobra.Command {
 				return
 			}
 
-			if !strings.Contains(postType, "#") {
-				fmt.Println(MISSING_FRAGMENT_ERROR)
+			if strings.Contains(name, "#") {
+				fmt.Println(`Schema names can't contain "#".`)
 				return
 			}
 
