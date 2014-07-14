@@ -17,15 +17,33 @@ func main() {
 	rootCmd := &cobra.Command{Use: "tent"}
 
 	cmdProfiles := CmdProfiles(&c)
-	cmdProfiles.AddCommand(CmdProfilesAdd(&c), CmdProfilesRemove(&c), CmdProfilesDefault(&c))
+	cmdProfiles.AddCommand(
+		CmdProfilesAdd(&c),
+		CmdProfilesRemove(&c),
+		CmdProfilesDefault(&c),
+	)
 
 	cmdSchemas := CmdSchemas(&c)
-	cmdSchemas.AddCommand(CmdSchemasAdd(&c), CmdSchemasRemove(&c))
+	cmdSchemas.AddCommand(
+		CmdSchemasAdd(&c),
+		CmdSchemasRemove(&c),
+	)
 
-	rootCmd.AddCommand(CmdDiscover(), CmdAuth(&c), cmdProfiles, cmdSchemas, CmdQuery(&c), CmdGet(&c), CmdCreate(&c), CmdDelete(&c))
+	rootCmd.AddCommand(
+		CmdDiscover(),
+		CmdAuth(&c),
+		CmdCreate(&c),
+		CmdGet(&c),
+		CmdQuery(&c),
+		CmdDelete(&c),
+		cmdProfiles,
+		cmdSchemas,
+	)
 
 	rootCmd.Execute()
 }
+
+const MISSING_FRAGMENT_ERROR = `Post type must have a fragment. Place a "#" at the end.`
 
 func isURL(s string) bool {
 	if _, err := url.ParseRequestURI(s); err != nil {

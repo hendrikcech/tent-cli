@@ -10,9 +10,11 @@ import (
 
 func CmdGet(c *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get [<entity>] <id> [<version>]",
-		Short: "Get a single post",
-		Long:  "Get a single post. Only the post id is required. Entity defaults to the current profiles entity.",
+		Use:   "get [<entity>] <post_id> [<version>]",
+		Short: "Get a single post.",
+		Long:  `
+Get a single post by its' post id.
+<entity> defaults to the current profiles entity; <version> to the latest version known by the server.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			p, err := c.DefaultProfile()
 			if err != nil {

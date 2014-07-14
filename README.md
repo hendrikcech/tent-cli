@@ -12,7 +12,7 @@ Easily work with the Tent protocol from the command line. Discover URLs, get cre
 - [X] create new posts
 - [ ] update existing posts
 - [X] profile support
-- [ ] post schema support
+- [X] post schema support
 
 ## Usage
 ```
@@ -20,11 +20,15 @@ Usage:
   tent [command]
 
 Available Commands:
-  discover url               Discover an url
-  auth [entity|profile_name] Get new credentials
-  profiles [add|remove]      Manage your profiles
-  query                      Query the posts feed
-  help [command]             Help about any command
+  discover <url>                       Get the meta post that is associated with an url.
+  auth [<entity>|<profile_name>]       Authorize a new app.
+  create [<type> <content> | <json>]   Create a new post.
+  get [<entity>] <post_id> [<version>] Get a single post.
+  query                                Query the posts feed.
+  delete <post_id> [<version_id>]      Delete a post.
+  profiles                             Manage entity profiles.
+  schemas                              Manage post schemas.
+  help [command]                       Help about any command.
 ```
 
 Profiles are used to save entity and credential configurations. Create a new profile with `tent profiles add entity https://entity.cupcake.is`. Run `tent auth entity` to add credentials to the profile.

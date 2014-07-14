@@ -25,8 +25,12 @@ func CmdQuery(c *config.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "query",
-		Short: "Query the posts feed",
-		Long:  "Query the posts feed.",
+		Short: "Query the posts feed.",
+		Long:  `
+Query the posts feed of the default profile.
+Find more information about the available parameters here: https://tent.io/docs/api#postsfeed
+Join multiple values with commata, i.e. when using --entities or --types.,
+`,
 		Run: func(cmd *cobra.Command, args []string) {
 			p, err := c.DefaultProfile()
 			if err != nil {
@@ -109,12 +113,12 @@ func CmdQuery(c *config.Config) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().IntVarP(&limit, "limit", "l", 25, "Cap number of posts returned")
+	cmd.Flags().IntVarP(&limit, "limit", "l", 25, "Cap number of returned posts.")
 	cmd.Flags().StringVarP(&since, "since", "s", "", "Only posts since timestamp and/or version. Format: `123456789,versionid`")
 	cmd.Flags().StringVarP(&before, "before", "b", "", "Only posts before timestamp and/or version. Format: `123456789,versionid`")
 	cmd.Flags().StringVarP(&until, "until", "u", "", "Only posts until timestamp and/or version. Format: `123456789,versionid`")
 	cmd.Flags().StringVarP(&entities, "entities", "e", "", "Only posts from specific entities.")
-	cmd.Flags().StringVarP(&types, "types", "t", "", "Only posts with these types.")
+	cmd.Flags().StringVarP(&types, "types", "t", "", "Only posts with specific types.")
 	cmd.Flags().IntVarP(&maxRefs, "maxrefs", "r", 5, "Cap number of inlined refs per post.")
 	// cmd.Flags().StringVarP(&mentions, "mentions", "m", "", "Only posts which mention specific entities.")
 

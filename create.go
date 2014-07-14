@@ -42,7 +42,7 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 
 			if i > -1 || isURL(args[0]) {
 				if !strings.Contains(postType, "#") {
-					fmt.Println(`Post type must have a fragment. Place a "#" at the end.`)
+					fmt.Println(MISSING_FRAGMENT_ERROR)
 					return
 				}
 
@@ -90,7 +90,7 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 		},
 	}
 
-	cmd.Flags().StringVarP(&publishedAt, "publishedAt", "", "", "Define published_at metadata. Pass unix timestamp in milliseconds.")
+	cmd.Flags().StringVarP(&publishedAt, "publishedAt", "", "", "Define published_at metadata. Pass a unix timestamp in milliseconds.")
 	cmd.Flags().BoolVarP(&public, "public", "p", true, "Set basic visibility of post.")
 
 	return cmd

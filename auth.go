@@ -18,8 +18,11 @@ func CmdAuth(c *config.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "auth [<entity>|<profile_name>]",
-		Short: "Get new credentials",
-		Long:  "Get new credentials for an entity or profile. If `profile_name` is specified, the credentials will be saved automatically.",
+		Short: "Authorize a new app.",
+		Long:  `
+Create a new app on the tent server of the specified entity and output the credentials.
+If <profile_name> is given, the profile will be updated with the obtained tokens.
+Join multiple values with commata, i.e. when using --read or --scopes.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) != 1 {
 				cmd.Help()
@@ -100,10 +103,11 @@ func CmdAuth(c *config.Config) *cobra.Command {
 				return
 			}
 
-			tmpl := `{
-  "id": "%v",
-  "key": "%v",
-  "algorithm": "sha256",
+			tmpl := `
+{
+  "access_token": "%v",
+  "hawk_key": "%v",
+  "hawk_algorithm": "sha256",
   "token_type": ""https://tent.io/oauth/hawk-token"
 }
 `
@@ -119,11 +123,11 @@ func CmdAuth(c *config.Config) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&name, "name", "n", "Tent CLI", "Name of app")
+	cmd.Flags().StringVarP(&name, "name", "n", "Tent CLI", "The applications' name.")
+	cmd.Flags().StringVarP(&read, "read", "r", "all", "Read permissions.")
+	cmd.Flags().StringVarP(&scopes, "scopes", "s", "permissions", `Scopes ("permissions"!).`)
+	cmd.Flags().StringVarP(&write, "write", "w", "all", "Write permissions.")
 	// cmd.Flags().StringVarP(&url, "url", "u", "tentcliapp.com", "App url")
-	cmd.Flags().StringVarP(&write, "write", "w", "all", "Write permissions")
-	cmd.Flags().StringVarP(&read, "read", "r", "all", "Read permissions")
-	cmd.Flags().StringVarP(&scopes, "scopes", "s", "permissions", "Scopes")
 
 	return cmd
 }

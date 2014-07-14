@@ -11,8 +11,11 @@ import (
 func CmdProfiles(c *config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "profiles",
-		Short: "Manage your profiles",
-		Long:  "Profiles are identified by a unique name and save the entity uri plus credentials.\nAdd, remove or set a default profile with this command.",
+		Short: "Manage entity profiles.",
+		Long:  `
+List, add or remove profiles or change the default.
+Profiles save entity uris' and credentials. They are identified by a unique name.
+The default profile is used by other commands like create, query and get.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			t := termtable.NewTable(nil, nil)
 			t.SetHeader([]string{"NAME", "ENTITY", "ID", "KEY", "APP"})
@@ -25,6 +28,7 @@ func CmdProfiles(c *config.Config) *cobra.Command {
 		},
 	}
 }
+
 func CmdProfilesAdd(c *config.Config) *cobra.Command {
 	var id string
 	var key string
@@ -32,8 +36,10 @@ func CmdProfilesAdd(c *config.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "add <profile_name> <entity>",
-		Short: "Create a new profile",
-		Long:  "Create a new profile named `profile_name` associated with `entity`.\nCredentials can either be specified with flags or by running `tent auth profile_name`.",
+		Short: "Create a new profile.",
+		Long:  `
+Create a new profile named <profile_name> that's associated with <entity>.
+Credentials can either be specified with flags or by running ` + "`auth <profile_name>`.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 2 {
 				cmd.Help()
@@ -73,16 +79,17 @@ func CmdProfilesAdd(c *config.Config) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&id, "id", "i", "", "Access token")
-	cmd.Flags().StringVarP(&key, "key", "k", "", "Hawk key")
-	cmd.Flags().StringVarP(&app, "app", "a", "", "App id")
+	cmd.Flags().StringVarP(&id, "id", "i", "", "Save hawk_id (or `access_token` in tent post).")
+	cmd.Flags().StringVarP(&key, "key", "k", "", "Save hawk_key.")
+	cmd.Flags().StringVarP(&app, "app", "a", "", "Save app id.")
 
 	return cmd
 }
+
 func CmdProfilesRemove(c *config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "remove <profile_name>",
-		Short: "Remove a profile",
+		Short: "Remove a profile.",
 		Long:  "Remove a profile by its name.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) != 1 {
@@ -103,11 +110,14 @@ func CmdProfilesRemove(c *config.Config) *cobra.Command {
 		},
 	}
 }
+
 func CmdProfilesDefault(c *config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "default [<profile_name>]",
-		Short: "Echo or set the default profile",
-		Long:  "Echo or set the default profile.",
+		Short: "Output or set the default profile.",
+		Long:  `
+Output or set the default profile.
+This profile will be used by other commands like create, get or delete.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 { // echo default profile
 				if c.Default == "" {
