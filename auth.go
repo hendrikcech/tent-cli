@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/hendrikcech/tent-cli/config"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
 	"github.com/tent/tent-client-go"
 	"strings"
 )
 
-func CmdAuth(c *config.Config) *cobra.Command {
+func CmdAuth(c *Config) *cobra.Command {
 	var name string
 	url := "https://app.example.com"
 	var write string
@@ -19,7 +18,7 @@ func CmdAuth(c *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "auth [<entity>|<profile_name>]",
 		Short: "Authorize a new app.",
-		Long:  `
+		Long: `
 Create a new app on the tent server of the specified entity and output the credentials.
 If <profile_name> is given, the profile will be updated with the obtained tokens.
 Join multiple values with commata, i.e. when using --read or --scopes.`,

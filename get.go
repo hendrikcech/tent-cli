@@ -3,15 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 )
 
-func CmdGet(c *config.Config) *cobra.Command {
+func CmdGet(c *Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get [<entity>] <post_id> [<version>]",
 		Short: "Get a single post.",
-		Long:  `
+		Long: `
 Get a single post by its' post id.
 <entity> defaults to the current profiles entity; <version> to the latest version known by the server.`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -26,7 +25,7 @@ Get a single post by its' post id.
 			case 1:
 				id = args[0]
 			case 2:
-				if i, profile := c.ProfileByName(args[0]); i > -1 { 
+				if i, profile := c.ProfileByName(args[0]); i > -1 {
 					entity = profile.Entity
 					id = args[1]
 				} else if !isURL(args[0]) {

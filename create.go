@@ -4,13 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 	"github.com/tent/tent-client-go"
 	"strings"
 )
 
-func CmdCreate(c *config.Config) *cobra.Command {
+func CmdCreate(c *Config) *cobra.Command {
 	var publishedAt string
 	var public bool
 

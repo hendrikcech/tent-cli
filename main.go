@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 	"net/url"
 	"os"
 )
 
 func main() {
-	c := config.Config{}
+	c := Config{}
 	if err := c.Read(); err != nil {
 		fmt.Println(err)
 		return

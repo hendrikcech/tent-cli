@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 	"github.com/stevedomin/termtable"
 	"github.com/tent/tent-client-go"
@@ -11,7 +10,7 @@ import (
 	"time"
 )
 
-func CmdQuery(c *config.Config) *cobra.Command {
+func CmdQuery(c *Config) *cobra.Command {
 	var limit int
 	var since string    // 1234567890,version
 	var before string   // 1234567890,version
@@ -24,7 +23,7 @@ func CmdQuery(c *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "query",
 		Short: "Query the posts feed.",
-		Long:  `
+		Long: `
 Query the posts feed of the default profile.
 Find more information about the available parameters here: https://tent.io/docs/api#postsfeed
 Join multiple values with commata, i.e. when using --entities or --types.

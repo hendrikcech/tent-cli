@@ -2,17 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 	"github.com/stevedomin/termtable"
 	"github.com/tent/tent-client-go"
 )
 
-func CmdProfiles(c *config.Config) *cobra.Command {
+func CmdProfiles(c *Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "profiles",
 		Short: "Manage entity profiles.",
-		Long:  `
+		Long: `
 List, add or remove profiles or change the default.
 Profiles save entity uris' and credentials. They are identified by a unique name.
 The default profile is used by other commands like create, query and get.`,
@@ -29,7 +28,7 @@ The default profile is used by other commands like create, query and get.`,
 	}
 }
 
-func CmdProfilesAdd(c *config.Config) *cobra.Command {
+func CmdProfilesAdd(c *Config) *cobra.Command {
 	var id string
 	var key string
 	var app string
@@ -37,7 +36,7 @@ func CmdProfilesAdd(c *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add <profile_name> <entity>",
 		Short: "Create a new profile.",
-		Long:  `
+		Long: `
 Create a new profile named <profile_name> that's associated with <entity>.
 Credentials can either be specified with flags or by running "auth <profile_name>".`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -55,7 +54,7 @@ Credentials can either be specified with flags or by running "auth <profile_name
 			meta, err := tent.Discover(entity)
 			maybeExit(err)
 
-			c.Profiles = append(c.Profiles, config.ProfileConfig{
+			c.Profiles = append(c.Profiles, ProfileConfig{
 				Name:    name,
 				Entity:  entity,
 				Servers: meta.Servers,
@@ -80,7 +79,7 @@ Credentials can either be specified with flags or by running "auth <profile_name
 	return cmd
 }
 
-func CmdProfilesRemove(c *config.Config) *cobra.Command {
+func CmdProfilesRemove(c *Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "remove <profile_name>",
 		Short: "Remove a profile.",
@@ -103,11 +102,11 @@ func CmdProfilesRemove(c *config.Config) *cobra.Command {
 	}
 }
 
-func CmdProfilesDefault(c *config.Config) *cobra.Command {
+func CmdProfilesDefault(c *Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "default [<profile_name>]",
 		Short: "Output or set the default profile.",
-		Long:  `
+		Long: `
 Output or set the default profile.
 This profile will be used by other commands like create, get or delete.`,
 		Run: func(cmd *cobra.Command, args []string) {
