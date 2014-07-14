@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"errors"
 )
 
 func CmdQuery(c *config.Config) *cobra.Command {
@@ -37,10 +36,7 @@ A note about --types and fragments:
 `,
 		Run: func(cmd *cobra.Command, args []string) {
 			p, err := c.DefaultProfile()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 			client := p.Client()
 
 			q := tent.NewPostsFeedQuery()
@@ -55,10 +51,7 @@ A note about --types and fragments:
 			}
 			for arg, setter := range timeSetter {
 				err = splitAndSetTimeValue(arg, setter)
-				if err != nil {
-					fmt.Println("Invalid value", err)
-					return
-				}
+				maybeExit(err)
 			}
 
 			if entities != "" {
@@ -67,14 +60,11 @@ A note about --types and fragments:
 						return p.Entity, nil
 					}
 					if !isURL(name) {
-						return "", errors.New(fmt.Sprintf(`Profile "%v" not found.`, name))
+						return "", fmt.Errorf(`Profile "%v" not found.`, name)
 					}
 					return name, nil
 				})
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+				maybeExit(err)
 				q.Set("entities", entitiesStr)
 			}
 			if types != "" {
@@ -83,22 +73,16 @@ A note about --types and fragments:
 						return s.MergeFragment(name), nil
 					}
 					if !isURL(name) {
-						return "", errors.New(fmt.Sprintf(`Schema "%v" not found.`, name))
+						return "", fmt.Errorf(`Schema "%v" not found.`, name)
 					}
 					return name, nil
 				})
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+				maybeExit(err)
 				q.Set("types", typesStr)
 			}
 
 			res, err := client.GetFeed(q, nil)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			t := termtable.NewTable(nil, nil)
 			t.SetHeader([]string{"ID", "ENTITY", "TYPE", "PUBLISHED_AT"})

@@ -3,7 +3,6 @@ package config
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/tent/hawk-go"
 	"github.com/tent/tent-client-go"
@@ -138,13 +137,12 @@ func (c *Config) ProfileByName(name string) (int, *ProfileConfig) {
 
 func (c *Config) DefaultProfile() (*ProfileConfig, error) {
 	if c.Default == "" {
-		return &ProfileConfig{}, errors.New("No default profile set.")
+		return &ProfileConfig{}, fmt.Errorf("No default profile set.")
 	}
 
 	i, p := c.ProfileByName(c.Default)
 	if i == -1 {
-		err := errors.New(fmt.Sprintf("Default profile \"%v\" doesn't exist.", c.Default))
-		return &ProfileConfig{}, err
+		return &ProfileConfig{}, fmt.Errorf("Default profile \"%v\" doesn't exist.", c.Default)
 	}
 
 	return p, nil

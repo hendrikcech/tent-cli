@@ -25,8 +25,7 @@ If <profile_name> is given, the profile will be updated with the obtained tokens
 Join multiple values with commata, i.e. when using --read or --scopes.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) != 1 {
-				cmd.Help()
-				return
+				showHelpAndExit(cmd)
 			}
 
 			var servers []tent.MetaPostServer
@@ -35,10 +34,7 @@ Join multiple values with commata, i.e. when using --read or --scopes.`,
 				servers = p.Servers
 			} else {
 				meta, err := tent.Discover(args[0])
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+				maybeExit(err)
 				servers = meta.Servers
 			}
 
@@ -68,16 +64,10 @@ Join multiple values with commata, i.e. when using --read or --scopes.`,
 			post := tent.NewAppPost(app)
 
 			err := client.CreatePost(post)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			client.Credentials, _, err = post.LinkedCredentials()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			// redirect url
 			oauthURL := servers[0].URLs.OAuthURL(post.ID, "randomState")
@@ -90,18 +80,12 @@ Join multiple values with commata, i.e. when using --read or --scopes.`,
 			// wait for code input
 			var code string
 			_, err = fmt.Scanf("%s", &code)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			// request access token
 			// client.Credentials, err = client.RequestAccessToken(code)
 			tokens, err := client.RequestAccessToken(code)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			tmpl := `
 {

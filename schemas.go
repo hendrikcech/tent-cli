@@ -9,7 +9,7 @@ import (
 )
 
 func CmdSchemas(c *config.Config) *cobra.Command {
-	cmd := &cobra.Command{
+	return &cobra.Command{
 		Use:   "schemas",
 		Short: "Manage post schemas.",
 		Long:  `
@@ -30,31 +30,27 @@ Post types can optionally be saved with fragments (e.g. "schemas add status http
 			fmt.Println(t.Render())
 		},
 	}
-	return cmd
 }
 
 func CmdSchemasAdd(c *config.Config) *cobra.Command {
-	cmd := &cobra.Command{
+	return &cobra.Command{
 		Use:   "add <schema_name> <post_type>",
 		Short: "Add a new post schema.",
 		Long:  "Add a new post schema.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 2 {
-				cmd.Help()
-				return
+				showHelpAndExit(cmd)
 			}
 
 			name := args[0]
 			postType := args[1]
 
 			if i, _ := c.SchemaByName(name); i > -1 {
-				fmt.Printf("Schema \"%v\" already exists.\n", name)
-				return
+				exitWithError(fmt.Sprintf("Schema \"%v\" already exists.", name))
 			}
 
 			if strings.Contains(name, "#") {
-				fmt.Println(`Schema names can't contain "#".`)
-				return
+				exitWithError(`Schema names can't contain "#".`)
 			}
 
 			c.Schemas = append(c.Schemas, config.SchemaConfig{
@@ -62,12 +58,10 @@ func CmdSchemasAdd(c *config.Config) *cobra.Command {
 				PostType: postType,
 			})
 
-			if err := c.Write(); err != nil {
-				fmt.Println(err)
-			}
+			err := c.Write()
+			maybeExit(err)
 		},
 	}
-	return cmd
 }
 
 func CmdSchemasRemove(c *config.Config) *cobra.Command {
@@ -77,8 +71,7 @@ func CmdSchemasRemove(c *config.Config) *cobra.Command {
 		Long:  "Remove a schema by its name.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) != 1 {
-				cmd.Help()
-				return
+				showHelpAndExit(cmd)
 			}
 
 			i, _ := c.SchemaByName(args[0])
@@ -87,9 +80,8 @@ func CmdSchemasRemove(c *config.Config) *cobra.Command {
 			}
 			c.Schemas = append(c.Schemas[:i], c.Schemas[i+1:]...)
 
-			if err := c.Write(); err != nil {
-				fmt.Println(err)
-			}
+			err := c.Write()
+			maybeExit(err)
 		},
 	}
 }

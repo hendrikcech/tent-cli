@@ -28,10 +28,10 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 `,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
-				cmd.Help()
-				return
+				showHelpAndExit(cmd)
 			}
 
+			var err error
 			var post *tent.Post
 			postType := args[0]
 
@@ -42,8 +42,7 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 
 			if i > -1 || isURL(args[0]) {
 				if !strings.Contains(postType, "#") {
-					fmt.Println(`Post types are required to have a fragment. Place a "#" at the end.`)
-					return
+					exitWithError(`Post types are required to have a fragment. Place a "#" at the end.`)
 				}
 
 				post = &tent.Post{
@@ -56,35 +55,24 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 
 				if publishedAt != "" {
 					post.PublishedAt = &tent.UnixTime{}
-					if err := post.PublishedAt.UnmarshalJSON([]byte(publishedAt)); err != nil {
-						fmt.Println(err)
-						return
-					}
+					err = post.PublishedAt.UnmarshalJSON([]byte(publishedAt))
+					maybeExit(err)
 				}
 			} else {
-				err := json.Unmarshal([]byte(args[0]), &post)
+				err = json.Unmarshal([]byte(args[0]), &post)
 				if err != nil {
-					fmt.Println("Invalid post type or post json.")
-					return
+					exitWithError("Invalid post type or post json.")
 				}
 			}
 
 			p, err := c.DefaultProfile()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
-			if err = p.Client().CreatePost(post); err != nil {
-				fmt.Println(err)
-				return
-			}
+			err = p.Client().CreatePost(post)
+			maybeExit(err)
 
 			o, err := json.MarshalIndent(post, "", "  ")
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			fmt.Println(string(o))
 		},

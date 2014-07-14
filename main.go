@@ -5,6 +5,7 @@ import (
 	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 	"net/url"
+	"os"
 )
 
 func main() {
@@ -48,4 +49,21 @@ func isURL(s string) bool {
 		return false
 	}
 	return true
+}
+
+func showHelpAndExit(cmd *cobra.Command) {
+	cmd.Help()
+	os.Exit(1)
+}
+
+func maybeExit(err error) {
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
+func exitWithError(msg string) {
+	fmt.Fprintln(os.Stderr, msg)
+	os.Exit(1)
 }

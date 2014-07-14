@@ -14,19 +14,13 @@ func CmdDiscover() *cobra.Command {
 		Long:  "Discover an url and output any associated meta posts.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
-				cmd.Help()
-				return
+				showHelpAndExit(cmd)
 			}
 			meta, err := tent.Discover(args[0])
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 			o, err := json.MarshalIndent(meta, "", "  ")
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
+
 			fmt.Println(string(o))
 		},
 	}

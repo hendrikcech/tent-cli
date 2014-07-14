@@ -42,23 +42,18 @@ Create a new profile named <profile_name> that's associated with <entity>.
 Credentials can either be specified with flags or by running "auth <profile_name>".`,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 2 {
-				cmd.Help()
-				return
+				showHelpAndExit(cmd)
 			}
 
 			name := args[0]
 			entity := args[1]
 
 			if i, _ := c.ProfileByName(name); i > -1 {
-				fmt.Printf("Profile \"%v\" already exists.\n", name)
-				return
+				exitWithError(fmt.Sprintf("Profile \"%v\" already exists.", name))
 			}
 
 			meta, err := tent.Discover(entity)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			c.Profiles = append(c.Profiles, config.ProfileConfig{
 				Name:    name,
@@ -73,9 +68,8 @@ Credentials can either be specified with flags or by running "auth <profile_name
 				c.Default = name
 			}
 
-			if err = c.Write(); err != nil {
-				fmt.Println(err)
-			}
+			err = c.Write()
+			maybeExit(err)
 		},
 	}
 
@@ -93,8 +87,7 @@ func CmdProfilesRemove(c *config.Config) *cobra.Command {
 		Long:  "Remove a profile by its name.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) != 1 {
-				cmd.Help()
-				return
+				showHelpAndExit(cmd)
 			}
 			name := args[0]
 
@@ -104,9 +97,8 @@ func CmdProfilesRemove(c *config.Config) *cobra.Command {
 			}
 			c.Profiles = append(c.Profiles[:i], c.Profiles[i+1:]...)
 
-			if err := c.Write(); err != nil {
-				fmt.Println(err)
-			}
+			err := c.Write()
+			maybeExit(err)
 		},
 	}
 }
@@ -121,15 +113,13 @@ This profile will be used by other commands like create, get or delete.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 { // echo default profile
 				if c.Default == "" {
-					fmt.Println("No default profile set.")
-					return
+					exitWithError("No default profile set.")
 				}
 				fmt.Printf("Default profile is \"%v\"\n", c.Default)
 			} else { // set default profile
 				i, _ := c.ProfileByName(args[0])
 				if i == -1 {
-					fmt.Printf("No profile named \"%v\" existent.\n", args[0])
-					return
+					exitWithError(fmt.Sprintf("No profile named \"%v\" existent.", args[0]))
 				}
 				c.Default = args[0]
 				c.Write()

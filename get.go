@@ -16,10 +16,7 @@ Get a single post by its' post id.
 <entity> defaults to the current profiles entity; <version> to the latest version known by the server.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			p, err := c.DefaultProfile()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			entity := p.Entity
 			id := ""
@@ -45,22 +42,15 @@ Get a single post by its' post id.
 				id = args[1]
 				version = args[2]
 			default:
-				cmd.Help()
-				return
+				showHelpAndExit(cmd)
 			}
 
 			c := p.Client()
 			res, err := c.GetPost(entity, id, version, nil)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			o, err := json.MarshalIndent(res.Post, "", "  ")
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			maybeExit(err)
 
 			fmt.Println(string(o))
 		},
