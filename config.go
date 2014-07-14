@@ -1,4 +1,4 @@
-package config
+package main
 
 import (
 	"crypto/sha256"
@@ -29,7 +29,7 @@ func homedir() string {
 }
 
 type SchemaConfig struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
 	PostType string `json:"postType"`
 }
 
@@ -74,7 +74,7 @@ func (p *ProfileConfig) Client() *tent.Client {
 type Config struct {
 	Default  string          `json:"default"`
 	Profiles []ProfileConfig `json:"profiles"`
-	Schemas []SchemaConfig `json:"schemas"`
+	Schemas  []SchemaConfig  `json:"schemas"`
 }
 
 func (c *Config) Write() error {
