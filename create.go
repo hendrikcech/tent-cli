@@ -7,7 +7,6 @@ import (
 	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
 	"github.com/tent/tent-client-go"
-	"net/url"
 	"strings"
 )
 
@@ -17,7 +16,7 @@ func CmdCreate(c *config.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "create [<type> <content> | <json>]",
-		Short: "Create a new post",
+		Short: "Create a new post.",
 		Long: `Create a new post. Usage example:
 create https://example.com/types/song/v0# name="Also Sprach Zarathustra" composor="Richard Strauss"
 
@@ -34,21 +33,21 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 			}
 
 			var post *tent.Post
+			postType := args[0]
 
-			if _, err := url.ParseRequestURI(args[0]); err != nil {
-				err = json.Unmarshal([]byte(args[0]), &post)
-				if err != nil {
-					fmt.Println("Invalid post type or post json.")
-					return
-				}
-			} else {
-				if !strings.Contains(args[0], "#") {
+			i, s := c.SchemaByName(args[0])
+			if i > -1 {
+				postType = s.PostType
+			}
+
+			if i > -1 || isURL(args[0]) {
+				if !strings.Contains(postType, "#") {
 					fmt.Println(`Post type must have a fragment. Place a "#" at the end.`)
 					return
 				}
 
 				post = &tent.Post{
-					Type:    args[0],
+					Type:    postType,
 					Content: buildContent(args[1:]),
 					Permissions: &tent.PostPermissions{
 						PublicFlag: &public,
@@ -62,6 +61,12 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 						return
 					}
 				}
+			} else {
+				err := json.Unmarshal([]byte(args[0]), &post)
+				if err != nil {
+					fmt.Println("Invalid post type or post json.")
+					return
+				}
 			}
 
 			p, err := c.DefaultProfile()
@@ -74,6 +79,14 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 				fmt.Println(err)
 				return
 			}
+
+			o, err := json.MarshalIndent(post, "", "  ")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			fmt.Println(string(o))
 		},
 	}
 

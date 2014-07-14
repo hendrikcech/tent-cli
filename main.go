@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hendrikcech/tent-cli/config"
 	"github.com/spf13/cobra"
+	"net/url"
 )
 
 func main() {
@@ -24,4 +25,11 @@ func main() {
 	rootCmd.AddCommand(CmdDiscover(), CmdAuth(&c), cmdProfiles, cmdSchemas, CmdQuery(&c), CmdGet(&c), CmdCreate(&c), CmdDelete(&c))
 
 	rootCmd.Execute()
+}
+
+func isURL(s string) bool {
+	if _, err := url.ParseRequestURI(s); err != nil {
+		return false
+	}
+	return true
 }
