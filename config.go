@@ -135,14 +135,17 @@ func (c *Config) ProfileByName(name string) (int, *ProfileConfig) {
 	return -1, &ProfileConfig{}
 }
 
-func (c *Config) DefaultProfile() (*ProfileConfig, error) {
-	if c.Default == "" {
-		return &ProfileConfig{}, fmt.Errorf("No default profile set.")
+func (c *Config) Profile(s string) (*ProfileConfig, error) {
+	if s == "" {
+		if c.Default == "" {
+			return &ProfileConfig{}, fmt.Errorf("No default profile set.")
+		}
+		s = c.Default
 	}
 
-	i, p := c.ProfileByName(c.Default)
+	i, p := c.ProfileByName(s)
 	if i == -1 {
-		return &ProfileConfig{}, fmt.Errorf("Default profile \"%v\" doesn't exist.", c.Default)
+		return &ProfileConfig{}, fmt.Errorf("Profile \"%v\" doesn't exist.", s)
 	}
 
 	return p, nil

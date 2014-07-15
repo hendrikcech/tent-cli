@@ -50,6 +50,10 @@ func isURL(s string) bool {
 	return true
 }
 
+func setUseFlag(s *string, cmd *cobra.Command) {
+	cmd.Flags().StringVarP(s, "use", "", "", "Specify which profile to use.")
+}
+
 func showHelpAndExit(cmd *cobra.Command) {
 	cmd.Help()
 	os.Exit(1)

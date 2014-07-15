@@ -5,6 +5,8 @@ import (
 )
 
 func CmdDelete(c *Config) *cobra.Command {
+	var profile string
+
 	cmd := &cobra.Command{
 		Use:   "delete <post_id> [<version_id>]",
 		Short: "Delete a post.",
@@ -25,7 +27,7 @@ The entire post will be deleted if <version_id> is not specified.`,
 				showHelpAndExit(cmd)
 			}
 
-			p, err := c.DefaultProfile()
+			p, err := c.Profile(profile)
 			maybeExit(err)
 			c := p.Client()
 
@@ -33,6 +35,8 @@ The entire post will be deleted if <version_id> is not specified.`,
 			maybeExit(err)
 		},
 	}
+
+	setUseFlag(&profile, cmd)
 
 	return cmd
 }

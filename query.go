@@ -20,6 +20,8 @@ func CmdQuery(c *Config) *cobra.Command {
 	var maxRefs int
 	// var mentions string // mentionone,mentiontwo
 
+	var profile string
+
 	cmd := &cobra.Command{
 		Use:   "query",
 		Short: "Query the posts feed.",
@@ -34,7 +36,7 @@ A note about --types and fragments:
 - "--types=https://tent.io/types/status/v0#reply" just matches "https://tent.io/types/status/v0#reply"
 `,
 		Run: func(cmd *cobra.Command, args []string) {
-			p, err := c.DefaultProfile()
+			p, err := c.Profile(profile)
 			maybeExit(err)
 			client := p.Client()
 
@@ -104,6 +106,8 @@ A note about --types and fragments:
 	cmd.Flags().StringVarP(&types, "types", "t", "", "Only posts with specific types.")
 	cmd.Flags().IntVarP(&maxRefs, "maxrefs", "r", 5, "Cap number of inlined refs per post.")
 	// cmd.Flags().StringVarP(&mentions, "mentions", "m", "", "Only posts which mention specific entities.")
+
+	setUseFlag(&profile, cmd)
 
 	return cmd
 }

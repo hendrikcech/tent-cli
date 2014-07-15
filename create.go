@@ -12,6 +12,7 @@ import (
 func CmdCreate(c *Config) *cobra.Command {
 	var publishedAt string
 	var public bool
+	var profile string
 
 	cmd := &cobra.Command{
 		Use:   "create [<type> <content> | <json>]",
@@ -64,7 +65,7 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 				}
 			}
 
-			p, err := c.DefaultProfile()
+			p, err := c.Profile(profile)
 			maybeExit(err)
 
 			err = p.Client().CreatePost(post)
@@ -79,6 +80,7 @@ create '{"type": "https://example.com/types/person/v0#", "licenses": [{"url": "h
 
 	cmd.Flags().StringVarP(&publishedAt, "publishedAt", "", "", "Define published_at metadata. Pass a unix timestamp in milliseconds.")
 	cmd.Flags().BoolVarP(&public, "public", "p", true, "Set basic visibility of post.")
+	setUseFlag(&profile, cmd)
 
 	return cmd
 }

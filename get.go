@@ -7,6 +7,8 @@ import (
 )
 
 func CmdGet(c *Config) *cobra.Command {
+	var profile string
+
 	cmd := &cobra.Command{
 		Use:   "get [<entity>] <post_id> [<version>]",
 		Short: "Get a single post.",
@@ -14,7 +16,7 @@ func CmdGet(c *Config) *cobra.Command {
 Get a single post by its' post id.
 <entity> defaults to the current profiles entity; <version> to the latest version known by the server.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			p, err := c.DefaultProfile()
+			p, err := c.Profile(profile)
 			maybeExit(err)
 
 			entity := p.Entity
@@ -54,6 +56,8 @@ Get a single post by its' post id.
 			fmt.Println(string(o))
 		},
 	}
+
+	setUseFlag(&profile, cmd)
 
 	return cmd
 }
