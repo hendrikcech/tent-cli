@@ -12,7 +12,7 @@ func CmdSchemas(c *Config) *cobra.Command {
 		Use:   "schemas",
 		Short: "Manage post schemas.",
 		Long: `
-List, add or remove post schemas.
+List, set or remove post schemas.
 Schemas keep you from typing post types over and over by mapping them to short names.
 This simple feature might get expanded when strict post schemas get introduced with Tent 0.4.
 
@@ -31,11 +31,11 @@ Post types can optionally be saved with fragments (e.g. "schemas add status http
 	}
 }
 
-func CmdSchemasAdd(c *Config) *cobra.Command {
+func CmdSchemasSet(c *Config) *cobra.Command {
 	return &cobra.Command{
-		Use:   "add <schema_name> <post_type>",
-		Short: "Add a new post schema.",
-		Long:  "Add a new post schema.",
+		Use:   "set <schema_name> <post_type>",
+		Short: "Define a post schema.",
+		Long:  "Add a new or overwrite an existing post schema.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 2 {
 				showHelpAndExit(cmd)
@@ -44,18 +44,20 @@ func CmdSchemasAdd(c *Config) *cobra.Command {
 			name := args[0]
 			postType := args[1]
 
-			if i, _ := c.SchemaByName(name); i > -1 {
-				exitWithError(fmt.Sprintf("Schema \"%v\" already exists.", name))
-			}
-
 			if strings.Contains(name, "#") {
 				exitWithError(`Schema names can't contain "#".`)
 			}
 
-			c.Schemas = append(c.Schemas, SchemaConfig{
-				Name:     name,
-				PostType: postType,
-			})
+			if i, s := c.SchemaByName(name); i > -1 {
+				// schema already exists
+				s.Name = name
+				s.PostType = postType
+			} else {
+				c.Schemas = append(c.Schemas, SchemaConfig{
+					Name:     name,
+					PostType: postType,
+				})
+			}
 
 			err := c.Write()
 			maybeExit(err)

@@ -25,7 +25,7 @@ func main() {
 
 	cmdSchemas := CmdSchemas(&c)
 	cmdSchemas.AddCommand(
-		CmdSchemasAdd(&c),
+		CmdSchemasSet(&c),
 		CmdSchemasRemove(&c),
 	)
 
