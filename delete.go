@@ -6,6 +6,7 @@ import (
 
 func CmdDelete(c *Config) *cobra.Command {
 	var profile string
+	var deletePost bool
 
 	cmd := &cobra.Command{
 		Use:   "delete <post_id> [<version_id>]",
@@ -31,11 +32,12 @@ The entire post will be deleted if <version_id> is not specified.`,
 			maybeExit(err)
 			c := p.Client()
 
-			_, err = c.DeletePost(id, version, true)
+			_, err = c.DeletePost(id, version, deletePost)
 			maybeExit(err)
 		},
 	}
 
+	cmd.Flags().BoolVarP(&deletePost, "delete-post", "p", true, "Specify if a delete posts should be created.")
 	setUseFlag(&profile, cmd)
 
 	return cmd
