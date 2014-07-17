@@ -10,9 +10,9 @@ Easily work with the Tent protocol from the command line. Discover URLs, get cre
 - [X] get single posts
 - [X] delete posts
 - [X] create new posts
-- [ ] update existing posts
+- [X] update existing posts
 - [X] profile support
-- [X] post schema support
+- [X] simple post schema support
 
 ## Usage
 ```
@@ -20,18 +20,22 @@ Usage:
   tent [command]
 
 Available Commands:
-  discover <url>                       Get the meta post that is associated with an url.
-  auth [<entity>|<profile_name>]       Authorize a new app.
-  create [<type> <content> | <json>]   Create a new post.
-  get [<entity>] <post_id> [<version>] Get a single post.
-  query                                Query the posts feed.
-  delete <post_id> [<version_id>]      Delete a post.
-  profiles                             Manage entity profiles.
-  schemas                              Manage post schemas.
-  help [command]                       Help about any command.
+  discover <url>                        Get the meta post that is associated with an url.
+  auth [<entity>|<profile_name>]        Authorize a new app.
+  create [<type> <content> | <json>]    Create a new post.
+  update [<entity>] <post_id> <content> Update an existing post.
+  get [<entity>] <post_id> [<version>]  Get a single post.
+  query                                 Query the posts feed.
+  delete <post_id> [<version_id>]       Delete a post.
+  profiles                              Manage entity profiles.
+  schemas                               Manage post schemas.
+
+Use "tent help [command]" for more information about that command.
 ```
 
 Profiles are used to save entity and credential configurations. Create a new profile with `tent profiles add entity https://entity.cupcake.is`. Run `tent auth entity` to add credentials to the profile.
+Schemas are currently very simple. They basically just map a string to a post type uri to save you from typing these long uris over and over.
+Some schemas are defined by default. ´app´ maps to ´https://tent.io/types/app/v0´ for example.
 
 ## Installation
 Visit the [releases page](https://github.com/hendrikcech/tent-cli/releases/latest) and download a build for your system. If you're on OS X or Linux, unzip the file and copy `tent-cli` to `/usr/local/bin`.
