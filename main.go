@@ -33,6 +33,7 @@ func main() {
 		CmdDiscover(),
 		CmdAuth(&c),
 		CmdCreate(&c),
+		CmdUpdate(&c),
 		CmdGet(&c),
 		CmdQuery(&c),
 		CmdDelete(&c),
