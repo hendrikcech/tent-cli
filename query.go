@@ -18,6 +18,7 @@ func CmdQuery(c *Config) *cobra.Command {
 	var entities string // entityone,entitytwo
 	var types string    // typeone,typetwo
 	var maxRefs int
+	var sortBy string // r,p,vr,vp
 	// var mentions string // mentionone,mentiontwo
 
 	var profile string
@@ -81,6 +82,11 @@ A note about --types and fragments:
 				maybeExit(err)
 				q.Set("types", typesStr)
 			}
+			if sortBy != "" {
+				order, err := matchSortOrder(sortBy)
+				maybeExit(err)
+				q.SortBy(order)
+			}
 
 			res, err := client.GetFeed(q, nil)
 			maybeExit(err)
@@ -105,6 +111,7 @@ A note about --types and fragments:
 	cmd.Flags().StringVarP(&entities, "entities", "e", "", "Only posts from specific entities.")
 	cmd.Flags().StringVarP(&types, "types", "t", "", "Only posts with specific types.")
 	cmd.Flags().IntVarP(&maxRefs, "maxrefs", "r", 5, "Cap number of inlined refs per post.")
+	cmd.Flags().StringVarP(&sortBy, "sortBy", "o", "", `Define sort order. Possible values: "p" published_at, "r" received_at, "vp" version.published_at, "vr" version.received_at`)
 	// cmd.Flags().StringVarP(&mentions, "mentions", "m", "", "Only posts which mention specific entities.")
 
 	setUseFlag(&profile, cmd)
@@ -140,4 +147,19 @@ func splitAndMaybeReplace(s string, get func(string) (string, error)) (string, e
 		res = append(res, p)
 	}
 	return strings.Join(res, ","), nil
+}
+
+func matchSortOrder(s string) (tent.SortOrder, error) {
+	switch s {
+	case "p":
+		return tent.PublishedAt, nil
+	case "r":
+		return tent.ReceivedAt, nil
+	case "vp":
+		return tent.VersionPublishedAt, nil
+	case "vr":
+		return tent.VersionReceivedAt, nil
+	default:
+		return -1, fmt.Errorf("No match for %s", s)
+	}
 }
