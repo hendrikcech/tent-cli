@@ -46,8 +46,7 @@ Get a single post by its' post id.
 				showHelpAndExit(cmd)
 			}
 
-			c := p.Client()
-			res, err := c.GetPost(entity, id, version, nil)
+			res, err := p.Client().GetPost(entity, id, version, nil)
 			maybeExit(err)
 
 			o, err := json.MarshalIndent(res.Post, "", "  ")
