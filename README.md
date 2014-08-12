@@ -3,16 +3,7 @@ tent-cli
 
 Easily work with the Tent protocol from the command line. Discover URLs, get credentials and manage posts.
 
-## Status
-- [X] discovery
-- [X] authentication
-- [X] query support
-- [X] get single posts
-- [X] delete posts
-- [X] create new posts
-- [X] update existing posts
-- [X] profile support
-- [X] simple post schema support
+This package is tested on OS X 10.9.4, but should also work on Linux. There are confirmed problems with Windows.
 
 ## Usage
 ```
@@ -30,12 +21,16 @@ Available Commands:
   profiles                              Manage entity profiles.
   schemas                               Manage post schemas.
 
-Use "tent help [command]" for more information about that command.
+Use "tent help [command]" to get more information about a command.
 ```
 
-Profiles are used to save entity and credential configurations. Create a new profile with `tent profiles add entity https://entity.cupcake.is`. Run `tent auth entity` to add credentials to the profile.
-Schemas are currently very simple. They basically just map a string to a post type uri to save you from typing these long uris over and over.
-Some schemas are defined by default. ´app´ maps to ´https://tent.io/types/app/v0´ for example.
+### Profiles
+Profiles are used to save entity and credential configurations. Create a new profile with `tent profiles add $entity https://$entity.cupcake.is`. Run `tent auth $entity` to add credentials to the profile.  
+You can permanently change the default profile with `tent profiles default $otherentity`. If you just want to temporarily use a different profile, append `--use=$otherentity` to the command.
+
+### Schemas
+Schemas can save you a lot of keystrokes. They let you map a string to a post type uri.  
+Some schemas are defined by default. You can list them with `tent schemas`. One of them is `app` which  maps to `https://tent.io/types/app/v0`.
 
 ## Installation
 Visit the [releases page](https://github.com/hendrikcech/tent-cli/releases/latest) and download a build for your system. If you're on OS X or Linux, unzip the file and copy `tent-cli` to `/usr/local/bin`.
@@ -44,7 +39,6 @@ Or, compile it yourself:
 ```
 go get github.com/hendrikcech/tent-cli && go install github.com/hendrikcech/tent-cli
 ```
-
 
 ## License
 The MIT License (MIT)
